@@ -1,0 +1,77 @@
+
+/* EatHub shared browser utilities */
+
+(function () {
+  "use strict";
+
+  const EatHub = {};
+
+  /**
+   * Check whether a value looks like a UUID.
+   */
+  EatHub.isValidId = function (value) {
+    return typeof value === "string" &&
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
+  };
+
+  /**
+   * Read a restaurant UUID from the current page URL.
+   */
+  EatHub.getRestaurantId = function () {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("restaurant");
+    return EatHub.isValidId(id) ? id : null;
+  };
+
+  /**
+   * Format a price in Kenyan shillings.
+   */
+  EatHub.formatPrice = function (amount) {
+    const price = Number(amount);
+
+    if (!Number.isFinite(price) || price < 0) {
+      return "Price unavailable";
+    }
+
+    return new Intl.NumberFormat("en-KE", {
+      style: "currency",
+      currency: "KES",
+      maximumFractionDigits: 2
+    }).format(price);
+  };
+
+  /**
+   * Display a message safely as plain text.
+   */
+  EatHub.showMessage = function (element, message) {
+    if (element) {
+      element.textContent = String(message);
+    }
+  };
+
+  /**
+   * Fetch JSON from an API and report HTTP errors.
+   */
+  EatHub.fetchJson = async function (url, options) {
+    const response = await fetch(url, options);
+    let data;
+
+    try {
+      data = await response.json();
+    } catch {
+      throw new Error("The server returned an invalid response.");
+    }
+
+    if (!response.ok) {
+      throw new Error(
+        data && data.error
+          ? data.error
+          : "The request could not be completed."
+      );
+    }
+
+    return data;
+  };
+
+  window.EatHub = EatHub;
+})();
