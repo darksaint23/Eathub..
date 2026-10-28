@@ -1,0 +1,246 @@
+
+const express = require("express");
+const helmet = require("helmet");
+const { createClient } = require("@supabase/supabase-js");
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(helmet());
+app.use(express.json({ limit: "1mb" }));
+
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+
+const supabase =
+  supabaseUrl && supabaseAnonKey
+    ? createClient(supabaseUrl, supabaseAnonKey)
+    : null;
+
+app.get("/", (req, res) => {
+  res.type("html").send(`
+    <!doctype html>
+    <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>EatHub</title>
+      </head>
+      <body style="font-family:system-ui;max-width:700px;margin:50px auto;padding:20px">
+        <h1>EatHub</h1>
+        <p>Restaurant menus, connected in one place.</p>
+        <p>Scan a restaurant's QR code to view its menu.</p>
+      </body>
+    </html>
+  `);
+});
+
+app.get("/api/health", (req, res) => {
+  res.json({
+    ok: true,
+    app: "EatHub",
+    databaseConfigured: Boolean(supabase)
+  });
+});
+
+app.get("/api/restaurants/:restaurantId/menu", async (req, res) => {
+  if (!supabase) {
+    return res.status(503).json({
+      error: "Database configuration is not complete."
+    });
+  }
+
+  const { restaurantId } = req.params;
+
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(restaurantId)) {
+    return res.status(400).json({ error: "Invalid restaurant ID." });
+  }
+
+  try {
+    const { data: restaurant, error: restaurantError } =
+      await supabase
+        .from("restaurants")
+        .select("id, name")
+        .eq("id", restaurantId)
+        .maybeSingle();
+
+    if (restaurantError) throw restaurantError;
+
+    if (!restaurant) {
+      return res.status(404).json({ error: "Restaurant not found." });
+    }
+
+    const { data: dishes, error: dishesError } =
+      await supabase
+        .from("dishes")
+        .select("id, name, description, price, image_url, is_available")
+        .eq("restaurant_id", restaurantId)
+        .eq("is_available", true)
+        .order("name");
+
+    if (dishesError) throw dishesError;
+
+    return res.json({ restaurant, dishes: dishes || [] });
+  } catch (error) {
+    console.error("Menu request failed:", error.message);
+    return res.status(500).json({ error: "Unable to load this menu." });
+  }
+});
+
+app.use((req, res) => {
+  res.status(404).json({ error: "Endpoint not found." });
+});
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`EatHub server listening on port ${PORT}`);
+});
+
+const express = require("express");
+const helmet = require("helmet");
+const { createClient } = require("@supabase/supabase-js");
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(helmet());
+app.use(express.json({ limit: "1mb" }));
+
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+
+const supabase =
+  supabaseUrl && supabaseAnonKey
+    ? createClient(supabaseUrl, supabaseAnonKey)
+    : null;
+
+app.get("/", (req, res) => {
+  res.type("html").send(`
+    <!doctype html>
+    <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>EatHub</title>
+      </head>
+      <body style="font-family:system-ui;max-width:700px;margin:50px auto;padding:20px">
+        <h1>EatHub</h1>
+        <p>Restaurant menus, connected in one place.</p>
+        <p>Scan a restaurant's QR code to view its menu.</p>
+      </body>
+    </html>
+  `);
+});
+
+app.get("/api/health", (req, res) => {
+  res.json({
+    ok: true,
+    app: "EatHub",
+    databaseConfigured: Boolean(supabase)
+  });
+});
+
+app.get("/api/restaurants/:restaurantId/menu", async (req, res) => {
+  if (!supabase) {
+    return res.status(503).json({
+      error: "Database configuration is not complete."
+    });
+  }
+
+  const { restaurantId } = req.params;
+
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(restaurantId)) {
+    return res.status(400).json({ error: "Invalid restaurant ID." });
+  }
+
+  try {
+    const { data: restaurant, error: restaurantError } =
+      await supabase
+        .from("restaurants")
+        .select("id, name")
+        .eq("id", restaurantId)
+        .maybeSingle();
+
+    if (restaurantError) throw restaurantError;
+
+    if (!restaurant) {
+      return res.status(404).json({ error: "Restaurant not found." });
+    }
+
+    const { data: dishes, error: dishesError } =
+      await supabase
+        .from("dishes")
+        .select("id, name, description, price, image_url, is_available")
+        .eq("restaurant_id", restaurantId)
+        .eq("is_available", true)
+        .order("name");
+
+    if (dishesError) throw dishesError;
+
+    return res.json({ restaurant, dishes: dishes || [] });
+  } catch (error) {
+    console.error("Menu request failed:", error.message);
+    return res.status(500).json({ error: "Unable to load this menu." });
+  }
+});
+
+app.use((req, res) => {
+  res.status(404).json({ error: "Endpoint not found." });
+});
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`EatHub server listening on port ${PORT}`);
+});
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EatHub - Sign In</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:Arial,sans-serif;background:#f2f7f3;margin:0;padding:20px;color:#203027}
+main{max-width:430px;margin:35px auto;background:white;padding:24px;border-radius:12px;box-shadow:0 4px 18px #00000010}
+.brand{font-size:28px;font-weight:bold;color:#167344}
+h1{font-size:25px}
+p{line-height:1.6;color:#58665d}
+label{display:block;margin-top:17px;font-weight:bold}
+input{display:block;width:100%;padding:13px;margin-top:7px;border:1px solid #ccd6ce;border-radius:7px;font-size:16px}
+button{width:100%;padding:14px;margin-top:22px;background:#167344;color:white;border:0;border-radius:7px;font-size:16px;font-weight:bold}
+.notice{padding:12px;background:#edf7ef;border-radius:7px;font-size:14px}
+a{color:#167344}
+</style>
+</head>
+<body>
+<main>
+<div class="brand">EatHub</div>
+<h1>Sign in to your account</h1>
+<p>Access your restaurant's menu management area.</p>
+
+<div class="notice">
+Sign-in is not connected yet. This page does not authenticate users.
+</div>
+
+<form id="loginForm">
+<label for="email">Email address</label>
+<input id="email" name="email" type="email" autocomplete="username" required>
+
+<label for="password">Password</label>
+<input id="password" name="password" type="password" autocomplete="current-password" required>
+
+<button type="submit">Sign-in coming soon</button>
+<p id="message" role="status"></p>
+</form>
+
+<p>Need a restaurant account? <a href="/register.html">Register your business</a></p>
+<p><a href="/">Back to EatHub home</a></p>
+</main>
+
+<script>
+document.getElementById("loginForm").addEventListener("submit",function(event){
+event.preventDefault();
+document.getElementById("message").textContent=
+"Sign-in is not active yet. Your details have not been sent or saved.";
+});
+</script>
+</body>
+</html>
