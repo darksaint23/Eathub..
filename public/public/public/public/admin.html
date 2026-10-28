@@ -1,0 +1,73 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EatHub - Platform Administration</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f2f7f3;color:#203027}
+header{background:#173e2c;color:white;padding:20px}
+header h1{margin:0;font-size:25px}
+header p{margin:7px 0 0}
+main{max-width:950px;margin:24px auto;padding:0 15px}
+.card{background:white;padding:20px;margin-bottom:16px;border-radius:12px;box-shadow:0 3px 14px #00000008}
+h2{color:#167344;margin-top:0}
+.notice{background:#fff5dd;padding:13px;border-radius:8px;line-height:1.6}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.stat{background:#edf7ef;padding:16px;border-radius:9px}
+.stat strong{display:block;font-size:24px;color:#167344;margin-bottom:5px}
+p{line-height:1.6}
+a{color:#167344}
+.links a{display:block;padding:12px;margin-top:10px;background:#edf7ef;border-radius:7px;text-decoration:none;font-weight:bold}
+footer{padding:10px 0 20px;color:#68756c;font-size:13px}
+</style>
+</head>
+<body>
+<header>
+<h1>EatHub Administration</h1>
+<p>Platform overview and restaurant approvals</p>
+</header>
+
+<main>
+<section class="card">
+<h2>Administrator access</h2>
+<div class="notice">
+<strong>Preview only:</strong> This page is not protected by administrator authentication yet. Do not use it to approve restaurants or manage real accounts. Secure server-side permissions must be implemented before launch.
+</div>
+</section>
+
+<section class="card">
+<h2>Platform overview</h2>
+<div class="grid">
+<div class="stat"><strong>—</strong>Registered restaurants</div>
+<div class="stat"><strong>—</strong>Pending approvals</div>
+<div class="stat"><strong>—</strong>Active menus</div>
+<div class="stat"><strong>—</strong>Menu views</div>
+</div>
+<p>Live figures will appear here after the administration API is connected.</p>
+</section>
+
+<section class="card">
+<h2>Restaurant approvals</h2>
+<p>Review registration requests and approve or suspend restaurants after secure administrator controls are added.</p>
+<p>No approval actions are available in this preview.</p>
+</section>
+
+<section class="card">
+<h2>Platform tools</h2>
+<div class="links">
+<a href="/register.html">Restaurant registration page</a>
+<a href="/dashboard.html">Restaurant dashboard</a>
+<a href="/">Public homepage</a>
+<a href="/login.html">Sign-in page</a>
+</div>
+</section>
+
+<footer>
+EatHub platform administration preview. Live management tools are not yet connected.
+</footer>
+</main>
+</body>
+  </html>
