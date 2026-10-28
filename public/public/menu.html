@@ -1,0 +1,146 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#12372a">
+  <title>Restaurant Menu | EatHub</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #f6f8f4;
+      color: #172820;
+      font-family: system-ui, sans-serif;
+    }
+    header {
+      background: #12372a;
+      color: white;
+      padding: 20px;
+    }
+    header a { color: #c9edbd; text-decoration: none; }
+    main { max-width: 900px; margin: 24px auto; padding: 0 16px; }
+    h1 { margin-bottom: 8px; }
+    #status { color: #5a6b60; line-height: 1.6; }
+    #dishes {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 16px;
+      margin-top: 22px;
+    }
+    .dish {
+      background: white;
+      border: 1px solid #e0e7df;
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .dish img {
+      display: block;
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      background: #e8eee6;
+    }
+    .details { padding: 16px; }
+    .price { font-weight: 800; color: #17643e; }
+    .muted { color: #68766d; font-size: 14px; }
+    .back { display: inline-block; margin-top: 18px; }
+  </style>
+</head>
+<body>
+  <header>
+    <strong>EatHub</strong>
+    <p>Discover the menu</p>
+    <a href="/">← Back to EatHub home</a>
+  </header>
+
+  <main>
+    <h1 id="restaurant-name">Restaurant Menu</h1>
+    <p id="status" role="status">Loading menu...</p>
+    <section id="dishes" aria-live="polite"></section>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const restaurantId = params.get("restaurant");
+    const nameElement = document.getElementById("restaurant-name");
+    const statusElement = document.getElementById("status");
+    const dishesElement = document.getElementById("dishes");
+
+    function showMessage(message) {
+      statusElement.textContent = message;
+    }
+
+    function renderDish(dish) {
+      const card = document.createElement("article");
+      card.className = "dish";
+
+      if (dish.image_url) {
+        const image = document.createElement("img");
+        image.src = dish.image_url;
+        image.alt = dish.name || "Dish photo";
+        image.loading = "lazy";
+        image.onerror = () => image.remove();
+        card.appendChild(image);
+      }
+
+      const details = document.createElement("div");
+      details.className = "details";
+
+      const name = document.createElement("h2");
+      name.textContent = dish.name;
+
+      const description = document.createElement("p");
+      description.textContent = dish.description || "Freshly prepared for you.";
+      description.className = "muted";
+
+      const price = document.createElement("p");
+      price.className = "price";
+      price.textContent = "KSh " + Number(dish.price).toLocaleString("en-KE", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+
+      details.append(name, description, price);
+      card.appendChild(details);
+      dishesElement.appendChild(card);
+    }
+
+    async function loadMenu() {
+      if (!restaurantId ||
+          !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(restaurantId)) {
+        showMessage("Please scan a valid restaurant QR code or open a valid menu link.");
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          "/api/restaurants/" + encodeURIComponent(restaurantId) + "/menu"
+        );
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || "Unable to load this menu.");
+        }
+
+        nameElement.textContent = result.restaurant.name;
+        dishesElement.replaceChildren();
+
+        if (!result.dishes || result.dishes.length === 0) {
+          showMessage("There are no available dishes on this menu yet.");
+          return;
+        }
+
+        result.dishes.forEach(renderDish);
+        showMessage(result.dishes.length + " available dishes");
+      } catch (error) {
+        showMessage(error.message || "Could not load the menu. Please try again later.");
+      }
+    }
+
+    loadMenu();
+  </script>
+</body>
+</html>
