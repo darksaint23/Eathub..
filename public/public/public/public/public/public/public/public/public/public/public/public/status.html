@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>System Status - EatHub</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: #f2f7f3;
+      color: #203027;
+    }
+    main {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 24px;
+      background: white;
+      border-radius: 12px;
+    }
+    h1, h2 { color: #167344; }
+    .item {
+      margin: 12px 0;
+      padding: 14px;
+      border: 1px solid #dce5de;
+      border-radius: 8px;
+    }
+    #result { white-space: pre-wrap; overflow-wrap: anywhere; }
+    a { color: #167344; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>EatHub System Status</h1>
+  <p>This page checks the server health endpoint.</p>
+
+  <div class="item">
+    <strong>Server status:</strong>
+    <p id="server">Checking...</p>
+  </div>
+
+  <div class="item">
+    <strong>Database configuration:</strong>
+    <p id="database">Not checked yet</p>
+  </div>
+
+  <h2>Technical response</h2>
+  <pre id="result">Waiting for response...</pre>
+
+  <p><a href="/">Return to homepage</a></p>
+</main>
+
+<script>
+async function checkStatus() {
+  const server = document.getElementById("server");
+  const database = document.getElementById("database");
+  const result = document.getElementById("result");
+
+  try {
+    const response = await fetch("/api/health");
+    const data = await response.json();
+
+    server.textContent = response.ok ? "Responding" : "Error";
+    database.textContent = data.databaseConfigured
+      ? "Configuration detected; connection still needs verification"
+      : "Not configured";
+
+    result.textContent = JSON.stringify(data, null, 2);
+  } catch (error) {
+    server.textContent = "Could not reach the server";
+    database.textContent = "Not checked";
+    result.textContent = "The health endpoint could not be reached.";
+  }
+}
+
+checkStatus();
+</script>
+</body>
+</html>
