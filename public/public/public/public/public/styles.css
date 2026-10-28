@@ -1,0 +1,145 @@
+
+/* EatHub shared styles */
+
+:root {
+  --eh-green: #167344;
+  --eh-green-dark: #105632;
+  --eh-background: #f2f7f3;
+  --eh-surface: #ffffff;
+  --eh-text: #203027;
+  --eh-muted: #657168;
+  --eh-border: #ccd6ce;
+  --eh-radius: 12px;
+  --eh-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--eh-background);
+  color: var(--eh-text);
+  line-height: 1.6;
+}
+
+a {
+  color: var(--eh-green);
+}
+
+a:hover {
+  color: var(--eh-green-dark);
+}
+
+.eh-container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 15px;
+}
+
+.eh-card {
+  background: var(--eh-surface);
+  border-radius: var(--eh-radius);
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: var(--eh-shadow);
+}
+
+.eh-brand {
+  color: var(--eh-green);
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.eh-muted {
+  color: var(--eh-muted);
+}
+
+.eh-label {
+  display: block;
+  font-weight: bold;
+  margin: 15px 0 7px;
+}
+
+.eh-input,
+.eh-select,
+.eh-textarea {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--eh-border);
+  border-radius: 8px;
+  background: white;
+  color: var(--eh-text);
+  font: inherit;
+}
+
+.eh-input:focus,
+.eh-select:focus,
+.eh-textarea:focus {
+  outline: 2px solid var(--eh-green);
+  outline-offset: 1px;
+}
+
+.eh-button {
+  display: inline-block;
+  padding: 12px 18px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--eh-green);
+  color: white;
+  font: inherit;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.eh-button:hover {
+  background: var(--eh-green-dark);
+  color: white;
+}
+
+.eh-notice {
+  padding: 13px;
+  border-radius: 8px;
+  background: #edf7ef;
+}
+
+.eh-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.eh-footer {
+  padding: 20px 15px;
+  text-align: center;
+  color: var(--eh-muted);
+  font-size: 14px;
+}
+
+@media (max-width: 480px) {
+  .eh-container {
+    padding: 14px 10px;
+  }
+
+  .eh-card {
+    padding: 16px;
+  }
+
+  .eh-brand {
+    font-size: 25px;
+  }
+
+  .eh-button {
+    width: 100%;
+    text-align: center;
+  }
+  }
