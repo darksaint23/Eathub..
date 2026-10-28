@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EatHub - Restaurant Registration</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f2f7f3;margin:0;padding:20px;color:#203027}
+main{max-width:500px;margin:20px auto;background:white;padding:22px;border-radius:12px}
+h1,.brand{color:#167344}
+.brand{font-size:28px;font-weight:bold}
+p{line-height:1.6}
+label{display:block;margin-top:15px;font-weight:bold}
+input,select,textarea{width:100%;padding:12px;margin-top:6px;box-sizing:border-box;border:1px solid #ccc;border-radius:7px;font-size:16px}
+button{width:100%;padding:14px;margin-top:20px;background:#167344;color:white;border:0;border-radius:7px;font-size:16px}
+.notice{background:#edf7ef;padding:12px;border-radius:7px}
+a{color:#167344}
+</style>
+</head>
+<body>
+<main>
+<div class="brand">EatHub</div>
+<h1>Register your restaurant</h1>
+<p>Join EatHub to manage your restaurant or hotel's digital menu.</p>
+<div class="notice"><strong>Registration coming soon.</strong> This form is a preview and does not save or send information yet.</div>
+
+<form id="registerForm">
+<label for="restaurant">Restaurant or hotel name</label>
+<input id="restaurant" name="restaurant" required maxlength="120">
+
+<label for="owner">Owner's name</label>
+<input id="owner" name="owner" required maxlength="120">
+
+<label for="email">Email address</label>
+<input id="email" name="email" type="email" required>
+
+<label for="phone">Phone number</label>
+<input id="phone" name="phone" type="tel" required>
+
+<label for="location">Town or location</label>
+<input id="location" name="location" required>
+
+<label for="type">Business type</label>
+<select id="type" name="type" required>
+<option value="">Choose type</option>
+<option>Restaurant</option>
+<option>Hotel</option>
+<option>Cafe</option>
+<option>School cafeteria</option>
+<option>Other</option>
+</select>
+
+<label for="details">Additional information (optional)</label>
+<textarea id="details" name="details" rows="3"></textarea>
+
+<button type="submit">Registration coming soon</button>
+<p id="message" role="status"></p>
+</form>
+
+<p><a href="/login.html">Sign in</a></p>
+<p><a href="/">Back to EatHub home</a></p>
+</main>
+<script>
+document.getElementById("registerForm").addEventListener("submit",function(e){
+e.preventDefault();
+document.getElementById("message").textContent="Registration is not active yet. Your information has not been sent or saved.";
+});
+</script>
+</body>
+</html>
