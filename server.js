@@ -1,6 +1,7 @@
 
 const express = require("express");
 const helmet = require("helmet");
+const path = require("path");
 const { createClient } = require("@supabase/supabase-js");
 
 const app = express();
@@ -17,23 +18,8 @@ const supabase =
     ? createClient(supabaseUrl, supabaseAnonKey)
     : null;
 
-app.get("/", (req, res) => {
-  res.type("html").send(`
-    <!doctype html>
-    <html lang="en">
-      <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>EatHub</title>
-      </head>
-      <body style="font-family:system-ui;max-width:700px;margin:50px auto;padding:20px">
-        <h1>EatHub</h1>
-        <p>Restaurant menus, connected in one place.</p>
-        <p>Scan a restaurant's QR code to view its menu.</p>
-      </body>
-    </html>
-  `);
-});
+// Serve the real website pages.
+app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/api/health", (req, res) => {
   res.json({
@@ -43,31 +29,40 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+// Load a restaurant's public menu by its UUID.
 app.get("/api/restaurants/:restaurantId/menu", async (req, res) => {
   if (!supabase) {
     return res.status(503).json({
-      error: "Database configuration is not complete."
+      error: "Database configuration is incomplete."
     });
   }
 
-  const { restaurantId } = req.params;
+  const restaurantId = req.params.restaurantId;
 
-  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(restaurantId)) {
-    return res.status(400).json({ error: "Invalid restaurant ID." });
+  const uuidPattern =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+  if (!uuidPattern.test(restaurantId)) {
+    return res.status(400).json({
+      error: "Invalid restaurant ID."
+    });
   }
 
   try {
     const { data: restaurant, error: restaurantError } =
       await supabase
         .from("restaurants")
-        .select("id, name")
+        .select("id, name, description, logo_url, currency")
         .eq("id", restaurantId)
+        .eq("status", "approved")
         .maybeSingle();
 
     if (restaurantError) throw restaurantError;
 
     if (!restaurant) {
-      return res.status(404).json({ error: "Restaurant not found." });
+      return res.status(404).json({
+        error: "Approved restaurant not found."
+      });
     }
 
     const { data: dishes, error: dishesError } =
@@ -80,17 +75,36 @@ app.get("/api/restaurants/:restaurantId/menu", async (req, res) => {
 
     if (dishesError) throw dishesError;
 
-    return res.json({ restaurant, dishes: dishes || [] });
+    return res.json({
+      restaurant,
+      dishes: dishes || []
+    });
   } catch (error) {
-    console.error("Menu request failed:", error.message);
-    return res.status(500).json({ error: "Unable to load this menu." });
+    console.error("Menu API error:", error.message);
+    return res.status(500).json({
+      error: "Unable to load the menu."
+    });
   }
 });
 
+// Return JSON for unknown API endpoints.
+app.use("/api", (req, res) => {
+  res.status(404).json({ error: "API endpoint not found." });
+});
+
+// Friendly page for other unknown website addresses.
 app.use((req, res) => {
-  res.status(404).json({ error: "Endpoint not found." });
+  res.status(404).sendFile(
+    path.join(__dirname, "public", "404.html"),
+    (error) => {
+      if (error && !res.headersSent) {
+        res.status(404).send("Page not found.");
+      }
+    }
+  );
 });
 
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`EatHub server listening on port ${PORT}`);
+  console.log(`EatHub listening on port ${PORT}`);
 });
+
