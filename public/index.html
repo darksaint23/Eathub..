@@ -1,0 +1,157 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#12372a">
+  <meta name="description" content="EatHub connects restaurants and customers through digital menus.">
+  <title>EatHub | Discover Great Food</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f7f8f4;
+      color: #172820;
+    }
+    header {
+      background: #12372a;
+      color: white;
+      padding: 18px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand { font-size: 25px; font-weight: 800; }
+    .brand span { color: #b7e4a5; }
+    .tag { font-size: 12px; color: #d7e7dc; }
+    main {
+      width: min(900px, 92%);
+      margin: 48px auto;
+    }
+    .hero {
+      background: #e5efe4;
+      padding: 36px 24px;
+      border-radius: 22px;
+    }
+    .label {
+      color: #276b48;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    h1 {
+      font-size: clamp(32px, 7vw, 54px);
+      line-height: 1.1;
+      margin: 14px 0;
+    }
+    p { line-height: 1.7; }
+    .search {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+    input {
+      flex: 1;
+      min-width: 190px;
+      padding: 15px;
+      border: 1px solid #b9cbb9;
+      border-radius: 10px;
+      font-size: 16px;
+      background: white;
+    }
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 15px 20px;
+      background: #17643e;
+      color: white;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .info {
+      margin-top: 28px;
+      padding: 22px;
+      border: 1px solid #e0e6dc;
+      border-radius: 16px;
+      background: white;
+    }
+    #message { overflow-wrap: anywhere; }
+    footer {
+      text-align: center;
+      padding: 28px 15px;
+      color: #627166;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">Eat<span>Hub</span></div>
+    <div class="tag">Your food. Your choice.</div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="label">Welcome to EatHub</div>
+      <h1>Good food starts here.</h1>
+      <p>
+        Explore restaurant menus, discover delicious dishes,
+        and check prices in Kenyan shillings.
+      </p>
+
+      <form class="search" id="menu-form">
+        <input
+          id="restaurant-id"
+          type="text"
+          placeholder="Enter restaurant menu ID"
+          aria-label="Restaurant menu ID"
+          required
+        >
+        <button type="submit">View Menu</button>
+      </form>
+      <p id="message" role="status">
+        Have a restaurant QR code? Scan it to open the right menu.
+      </p>
+    </section>
+
+    <section class="info">
+      <h2>One platform. Many restaurants.</h2>
+      <p>
+        Each restaurant manages its own dishes, prices, photos,
+        and availability. Menus are designed for your phone.
+      </p>
+      <p><strong>Currency:</strong> Kenyan shillings (KSh)</p>
+    </section>
+  </main>
+
+  <footer>
+    EatHub · Digital restaurant menus · Kenya
+  </footer>
+
+  <script>
+    const form = document.getElementById("menu-form");
+    const field = document.getElementById("restaurant-id");
+    const message = document.getElementById("message");
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const id = field.value.trim();
+
+      if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+        message.textContent = "Please enter a valid restaurant menu ID.";
+        return;
+      }
+
+      window.location.href =
+        "/menu.html?restaurant=" + encodeURIComponent(id);
+    });
+  </script>
+</body>
+</html>
