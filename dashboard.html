@@ -1,0 +1,70 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EatHub - Restaurant Dashboard</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f2f7f3;color:#203027}
+header{background:#167344;color:white;padding:18px 20px}
+header h1{margin:0;font-size:25px}
+header p{margin:6px 0 0}
+main{max-width:900px;margin:24px auto;padding:0 15px}
+.card{background:white;padding:20px;margin-bottom:16px;border-radius:12px;box-shadow:0 3px 14px #00000008}
+h2{margin-top:0;color:#167344}
+p{line-height:1.6}
+.notice{background:#edf7ef;padding:13px;border-radius:8px}
+.links a{display:block;padding:13px;margin-top:10px;background:#edf7ef;border-radius:8px;color:#167344;text-decoration:none;font-weight:bold}
+button{padding:12px 16px;background:#167344;color:white;border:0;border-radius:7px;font-size:15px}
+small{color:#657168}
+</style>
+</head>
+<body>
+<header>
+<h1>EatHub Dashboard</h1>
+<p>Restaurant menu management</p>
+</header>
+
+<main>
+<section class="card">
+<h2>Welcome</h2>
+<p>This dashboard is the starting point for managing your restaurant on EatHub.</p>
+<div class="notice">
+<strong>Setup in progress:</strong> Dashboard access, restaurant-specific permissions, and database operations are not connected yet. Do not enter sensitive business information here.
+</div>
+</section>
+
+<section class="card">
+<h2>Menu management</h2>
+<p>Manage dishes, prices, descriptions, images, and availability once the secure menu tools are connected.</p>
+<div class="links">
+<a href="/menu.html">Preview a customer menu</a>
+<a href="/">Open EatHub home</a>
+<a href="/login.html">Sign in</a>
+</div>
+</section>
+
+<section class="card">
+<h2>Restaurant activity</h2>
+<p>Future reports will include menu views, popular dishes, and restaurant activity.</p>
+<small>No live statistics are available yet.</small>
+</section>
+
+<section class="card">
+<h2>Account</h2>
+<p>Sign-in and staff permissions will be enabled after Supabase Authentication is connected.</p>
+<button type="button" id="signOut">Sign out — coming soon</button>
+<p id="message" role="status"></p>
+</section>
+</main>
+
+<script>
+document.getElementById("signOut").addEventListener("click",function(){
+document.getElementById("message").textContent=
+"Sign-out is not connected yet. No account session was changed.";
+});
+</script>
+</body>
+</html>
