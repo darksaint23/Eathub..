@@ -104,6 +104,36 @@ app.use((req, res) => {
   );
 });
 
+/* List restaurants from the database */
+app.get("/api/restaurants", async (req, res) => {
+  if (!supabase) {
+    return res.status(503).json({
+      error: "Database configuration is incomplete."
+    });
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from("restaurants")
+      .select("*")
+      .order("name", { ascending: true });
+
+    if (error) {
+      console.error("Restaurants query failed:", error.message);
+      return res.status(500).json({
+        error: "Unable to load restaurants."
+      });
+    }
+
+    return res.json({ restaurants: data || [] });
+  } catch (error) {
+    console.error("Restaurants endpoint failed:", error.message);
+    return res.status(500).json({
+      error: "An unexpected error occurred."
+    });
+  }
+});
+
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`EatHub listening on port ${PORT}`);
 });
