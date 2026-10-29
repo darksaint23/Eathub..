@@ -88,6 +88,11 @@ app.get("/api/restaurants/:restaurantId/menu", async (req, res) => {
 });
 
 // Return JSON for unknown API endpoints.
+app.get("/api/restaurants", async (req, res) => {
+  if (!supabase) {
+    return res.status(503).json({
+      error: "Database configuration is incomplete."
+    });
 app.use("/api", (req, res) => {
   res.status(404).json({ error: "API endpoint not found." });
 });
