@@ -137,4 +137,3 @@ app.use((req, res) => {
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`EatHub listening on port ${PORT}`);
 });
-
