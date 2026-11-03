@@ -1,0 +1,30 @@
+import requests
+
+def fetch_and_parse_restaurants():
+    url = "https://onrender.com"
+    
+    try:
+        # Fetch data from the EatHub API
+        response = requests.get(url)
+        response.raise_for_status()
+        
+        # Parse JSON payload
+        data = response.json()
+        restaurants = data.get("restaurants", [])
+        
+        print(f"Successfully retrieved {len(restaurants)} restaurant(s):\n")
+        
+        # Loop through and print restaurant details
+        for restaurant in restaurants:
+            print(f"Name:        {restaurant.get('name')}")
+            print(f"ID:          {restaurant.get('id')}")
+            print(f"Description: {restaurant.get('description')}")
+            print(f"Currency:    {restaurant.get('currency')}")
+            print(f"Status:      {restaurant.get('status')}")
+            print("-" * 40)
+            
+    except requests.exceptions.RequestException as e:
+        print(f"An error occurred while fetching data: {e}")
+
+if __name__ == "__main__":
+    fetch_and_parse_restaurants()
